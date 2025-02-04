@@ -3,13 +3,21 @@ import openai
 import faiss
 import numpy as np
 import streamlit as st
+import os
+from dotenv import load_dotenv
 
-# Retrieve API key from Streamlit Secrets
-if "OPENAI_API_KEY" not in st.secrets:
-    raise ValueError("No API key found. Make sure OPENAI_API_KEY is set in Streamlit Secrets.")
+# First, check for API key in Streamlit Secrets (Cloud Deployment)
+if "OPENAI_API_KEY" in st.secrets:
+    openai.api_key = st.secrets["OPENAI_API_KEY"]
+# Otherwise, load from .env (Local Deployment)
+else:
+    load_dotenv()
+    openai.api_key = os.getenv("OPENAI_API_KEY")
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-
+# Final check to prevent running without an API key
+if not openai.api_key:
+    st.error("⚠️ OpenAI API key is missing! Add it to Streamlit Secrets or .env.")
+    st.stop()
 
 def extract_text_from_pdf(pdf_path):
     """ Extracts all text from the provided PDF file. """
