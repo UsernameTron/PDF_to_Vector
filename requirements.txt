@@ -1,6 +1,6 @@
 PyMuPDF
 faiss-cpu
-openai
+openai==0.28.0
 numpy
 streamlit
 python-dotenv
